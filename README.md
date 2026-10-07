@@ -6,6 +6,23 @@ Servidor local em Python que recebe PDF, PNG e JPEG pelo navegador ou API HTTP e
 
 Baixe os pacotes em [Releases](https://github.com/jairsantana7/servidor-etiquetas/releases). Veja o [guia de instalação e empacotamento](docs/EMPACOTAMENTO.md). Os pacotes incluem Python e as dependências; a API permanece igual.
 
+## Comandos simples com Make
+
+Com Python e GNU Make instalados:
+
+```sh
+make start          # Prepara dependências, inicia o servidor e abre o navegador
+make build          # Gera o pacote para o sistema atual em dist/
+make test           # Executa os testes
+make help           # Lista os comandos
+```
+
+Também existem `make build-macos`, `make build-windows` e `make build-linux`, executados no sistema correspondente. No macOS/Linux, o padrão é `python3.12`; use `make start PYTHON=python3` se necessário. No Windows, o padrão é `python`. Para Linux, use o Python da distribuição com suporte RFCOMM.
+
+Exemplo sem imprimir: `make start ARGS="--simulate --port 8081 --no-browser"`. A configuração `.env` existente é preservada; numa instalação nova, a primeira execução cria o arquivo em simulação. Encerre com Ctrl+C.
+
+No Windows, instale GNU Make (ou use `mingw32-make` no lugar de `make`) e execute com Python nativo do Windows. WSL gera um pacote Linux. Sem Make, continuam disponíveis os [comandos Python diretos](docs/EMPACOTAMENTO.md).
+
 ## Executar pelo código-fonte no macOS
 
 Em uma instalação nova, obtenha também o código do TiMini e suas dependências:

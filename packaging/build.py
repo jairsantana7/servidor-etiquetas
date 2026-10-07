@@ -17,6 +17,7 @@ def run(*command):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--install', action='store_true', help='Instalar dependências de aplicação e build')
+    parser.add_argument('--prepare-only', action='store_true', help='Preparar o TiMini e dependências da aplicação sem gerar pacote')
     args = parser.parse_args()
     vendor = ROOT / 'vendor' / 'TiMini-Print'
     if not vendor.exists():
@@ -27,7 +28,13 @@ def main():
     if commit != TIMINI_COMMIT:
         raise RuntimeError(f'TiMini deve estar no commit {TIMINI_COMMIT}; encontrado {commit}.')
     if args.install:
-        run(sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt', '-r', str(vendor / 'requirements.txt'), '-r', 'packaging/requirements-build.txt')
+        command = [sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt', '-r', str(vendor / 'requirements.txt')]
+        if not args.prepare_only:
+            command += ['-r', 'packaging/requirements-build.txt']
+        run(*command)
+    if args.prepare_only:
+        print('Dependências e TiMini preparados.')
+        return
     run(sys.executable, '-m', 'PyInstaller', '--noconfirm', '--clean', 'packaging/ServidorEtiquetas.spec')
     system = platform.system()
     arch = {'AMD64': 'x86_64', 'aarch64': 'arm64'}.get(platform.machine(), platform.machine())

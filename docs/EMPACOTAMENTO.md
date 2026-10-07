@@ -82,6 +82,21 @@ Uma segunda instância na mesma porta falha antes de abrir a sessão Bluetooth. 
 
 ## Gerar pacotes pelo código-fonte
 
+Com GNU Make e Python instalados, execute na raiz do projeto:
+
+```sh
+make start          # Instala dependências e inicia o servidor
+make build          # Pacote nativo para o sistema atual
+make build-macos    # Somente no macOS
+make build-windows  # Somente no Windows
+make build-linux    # Somente no Linux
+make test
+```
+
+O Makefile cria e reutiliza `.venv`; preserva a configuração existente. `make install` prepara apenas as dependências da aplicação; `make build` instala também PyInstaller. Os alvos específicos verificam o sistema e recusam compilação cruzada. O padrão de Python é `python3.12` em macOS/Linux e `python` no Windows; substitua com `PYTHON=python3` ou o caminho do interpretador. No Linux, prefira `make build-linux PYTHON=python3` com o Python da distribuição.
+
+No Windows, é necessário instalar GNU Make; se o comando for `mingw32-make`, use esse nome. Para gerar o pacote Windows, execute com Python nativo do Windows. WSL gera pacote Linux. As instruções diretas abaixo continuam disponíveis sem Make.
+
 Use Python 3.12 no macOS/Windows. No Linux, prefira o Python da distribuição com suporte a sockets RFCOMM (Python 3.10 ou superior). Cada pacote deve ser gerado no sistema e arquitetura correspondentes; PyInstaller não faz compilação cruzada.
 
 Crie um ambiente virtual e execute nele:
