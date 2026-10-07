@@ -35,13 +35,17 @@ def configure(args):
     port = int(os.environ.get('PRINT_PORT', '8080'))
     if not 1 <= port <= 65535:
         raise ValueError('Porta deve estar entre 1 e 65535.')
+    return config, home
+
+
+def configure_logging(home):
     log = home / 'server.log'
     if sys.stdout is None:
         sys.stdout = log.open('a', encoding='utf-8', buffering=1)
     if sys.stderr is None:
         sys.stderr = log.open('a', encoding='utf-8', buffering=1)
     logging.basicConfig(level=logging.INFO, force=True, handlers=[logging.FileHandler(log, encoding='utf-8'), logging.StreamHandler()])
-    return config, home
+
 
 
 def main():
@@ -55,6 +59,7 @@ def main():
     parser.add_argument('--check', action='store_true', help='Validar recursos sem iniciar servidor')
     args = parser.parse_args()
     config, home = configure(args)
+    configure_logging(home)
     import server
     if args.check:
         from printer_session import PrinterSession
