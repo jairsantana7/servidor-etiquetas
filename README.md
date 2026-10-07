@@ -4,7 +4,7 @@ Servidor local em Python que recebe PDF, PNG e JPEG pelo navegador ou API HTTP e
 
 ## Aplicativos para macOS, Windows e Linux
 
-Veja o [guia de instalação e empacotamento](docs/EMPACOTAMENTO.md). Os pacotes incluem Python e as dependências; a API permanece igual.
+Baixe os pacotes em [Releases](https://github.com/jairsantana7/servidor-etiquetas/releases). Veja o [guia de instalação e empacotamento](docs/EMPACOTAMENTO.md). Os pacotes incluem Python e as dependências; a API permanece igual.
 
 ## Executar pelo código-fonte no macOS
 
