@@ -1,0 +1,58 @@
+name: Pacotes macOS Windows Linux
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            name: macOS-arm64
+          - os: macos-15-intel
+            name: macOS-x86_64
+          - os: windows-latest
+            name: Windows-x86_64
+          - os: ubuntu-22.04
+            name: Linux-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        if: runner.os != 'Linux'
+        with:
+          python-version: '3.12'
+      - name: Python do Linux com suporte RFCOMM
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-venv python3-dev bluez
+          python3 -m venv .build-venv
+          echo "$PWD/.build-venv/bin" >> "$GITHUB_PATH"
+      - name: Gerar pacote nativo
+        run: python packaging/build.py --install
+      - name: Testes
+        run: python -m unittest discover -s tests -v
+      - name: Verificar recursos empacotados
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            executable="dist/ServidorEtiquetas.app/Contents/MacOS/ServidorEtiquetas"
+          elif [ "$RUNNER_OS" = "Windows" ]; then
+            executable="dist/ServidorEtiquetas/ServidorEtiquetas.exe"
+          else
+            executable="dist/ServidorEtiquetas/ServidorEtiquetas"
+          fi
+          "$executable" --check --simulate --data-dir "$RUNNER_TEMP/print-package-check"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: |
+            dist/ServidorEtiquetas-*.zip
+            dist/ServidorEtiquetas-*.dmg
+            dist/ServidorEtiquetas-*.tar.gz
+          if-no-files-found: error

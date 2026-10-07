@@ -1,0 +1,15 @@
+.venv/
+data/
+__pycache__/
+.env
+vendor/
+dist/
+build/
+.build-venv/
+*.log
+*.sqlite3
+*.sqlite3-*
+.DS_Store
+TiMini-Print-Command-Line-*
+.env.*
+!.env.example
